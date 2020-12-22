@@ -1,6 +1,10 @@
+#流水线+Dll登记操作文档
+
+-----
+
 ### 1. 实现dll登记的目的
 
-        主要原因是代码实行分库管理后，各个业务系统与虚拟子系统之间实现完全解耦，两者之间没人任何关联，所以在下载业务系统的同时也需要下载虚拟子系统，而对于非开发人员（测试/实施）来讲，并不清楚一个业务系统需要使用到哪些虚拟子系统。所以，这里引入dll登记的概念，登记一个业务系统需要使用哪些虚拟子系统，以便测试/实施人员可以拿到业务系统后便可直接运行，不需要考虑我需要从哪里拷贝哪些dll进入程序主目录。
+    主要原因是代码实行分库管理后，各个业务系统与虚拟子系统之间实现完全解耦，两者之间没人任何关联，所以在下载业务系统的同时也需要下载虚拟子系统，而对于非开发人员（测试/实施）来讲，并不清楚一个业务系统需要使用到哪些虚拟子系统。所以，这里引入dll登记的概念，登记一个业务系统需要使用哪些虚拟子系统，以便测试/实施人员可以拿到业务系统后便可直接运行，不需要考虑我需要从哪里拷贝哪些dll进入程序主目录。  
 
 可支持以下功能的实现：
 
@@ -14,7 +18,7 @@
 
 ### 2. 实现思路
 
-        虚拟子系统在流水线编译时不再进行压缩包操作，而是把该虚拟子系统的解决方案生成的项目dll根据`Jenkinsfile.json`中配置内容发布到指定的ftp路径`/Halo/${医院名称}/AssemblyServerDll/`或`/Halo/${医院名称}/AssemblyClientDll/` 。相关的业务系统客户端发布至`/Halo/${医院名称}/AssemblyClient/`，服务端发布至`/Halo/${医院名称}/AssemblyServer/`。更改以前的以分支名区分的方式，主要原因就是存在有的医院的部分或全部程序是不存在独立分支(独立基线)的，所以改成按医院名称发布独立的程序。ftp目录结构如下图所示：
+    虚拟子系统在流水线编译时不再进行压缩包操作，而是把该虚拟子系统的解决方案生成的项目dll根据`Jenkinsfile.json`中配置内容发布到指定的ftp路径`/Halo/${医院名称}/AssemblyServerDll/`或`/Halo/${医院名称}/AssemblyClientDll/` 。相关的业务系统客户端发布至`/Halo/${医院名称}/AssemblyClient/`，服务端发布至`/Halo/${医院名称}/AssemblyServer/`。更改以前的以分支名区分的方式，主要原因就是存在有的医院的部分或全部程序是不存在独立分支(独立基线)的，所以改成按医院名称发布独立的程序。ftp目录结构如下图所示：  
 
 ![](https://tcs.teambition.net/storage/3120ec555c2c7d11c6c8205304e26d467060?Signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBcHBJRCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9hcHBJZCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9vcmdhbml6YXRpb25JZCI6IiIsImV4cCI6MTYwOTIxMTc1NCwiaWF0IjoxNjA4NjA2OTU0LCJyZXNvdXJjZSI6Ii9zdG9yYWdlLzMxMjBlYzU1NWMyYzdkMTFjNmM4MjA1MzA0ZTI2ZDQ2NzA2MCJ9.9bNoQdGK6GU1NoOSOIJyMiT6H82VvE6yxU3RoLym3xQ&download=image.png "")
 
@@ -52,7 +56,7 @@
 
 - publishDllToClient：表明当前业务系统需要发布哪些dll进入`AssemblyClientDll`文件夹，以英文逗号(,)分隔。可为空，即不发布
 
-配置后的语句需要进行校验，可以在[`__https://www.sojson.com/__`](https://www.sojson.com/)进行校验，点击`校验/格式化`后提示以下语句，则验证通过，配置文件可用。
+配置后的语句需要进行校验，可以在[`https://www.sojson.com/`](https://www.sojson.com/)进行校验，点击<kbd>校验/格式化</kbd>后提示以下语句，则验证通过，配置文件可用。
 
 ![](https://tcs.teambition.net/storage/312039bc04c32b3af1c7bd7e67f502a1171f?Signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBcHBJRCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9hcHBJZCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9vcmdhbml6YXRpb25JZCI6IiIsImV4cCI6MTYwOTIxMTc1NCwiaWF0IjoxNjA4NjA2OTU0LCJyZXNvdXJjZSI6Ii9zdG9yYWdlLzMxMjAzOWJjMDRjMzJiM2FmMWM3YmQ3ZTY3ZjUwMmExMTcxZiJ9.545F6I7167NbUVHpVFMYNOvqX_WdqaV_PidQC2UR9HM&download=image.png "")
 
@@ -66,7 +70,7 @@ Token为： `87c4abef8301b77d92fe2732d4a8313f`
 
 **添加流水线步骤：**
 
-GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾选Comments和Merge request events->点击Add WebHooks
+GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾选Comments和Merge request events->点击<kbd>Add WebHooks</kbd>
 
 > dev是改动后的，实现dll登记的流水线。
 
@@ -76,7 +80,7 @@ Token为： `2698289c451c27cf54eedb67f5553651`
 
 **添加流水线步骤：**
 
-GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾选Comments和Merge request events->点击Add WebHooks
+GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾选Comments和Merge request events->点击<kbd>Add WebHooks</kbd>
 
 > master 用途不明。暂时没有用到这条流水线，可以先不加
 
@@ -92,7 +96,7 @@ Token为：`2698289c451c27cf54eedb67f5553651`
 
 **添加流水线步骤：**
 
-GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾选Push events,文本框内填写`release*`->点击Add WebHooks
+GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾选Push events,文本框内填写`release*`->点击<kbd>Add WebHooks</kbd>
 
 ### 5. 各子系统的改动
 
@@ -106,7 +110,7 @@ GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾
 
 **创建dev基线**
 
-1. 从dev分支创建新的dev_{医院名称}分支，选择halo6后，选择你要创建基线的业务系统(此处非常不建议全选)，点击创建
+1. 从dev分支创建新的dev_{医院名称}分支，选择halo6后，选择你要创建基线的业务系统(此处非常不建议全选)，点击<kbd>创建</kbd>
 
 ![](https://tcs.teambition.net/storage/312047c85eafe60309eb980a3a27bd7e70a5?Signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBcHBJRCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9hcHBJZCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9vcmdhbml6YXRpb25JZCI6IiIsImV4cCI6MTYwOTIxMTc1NCwiaWF0IjoxNjA4NjA2OTU0LCJyZXNvdXJjZSI6Ii9zdG9yYWdlLzMxMjA0N2M4NWVhZmU2MDMwOWViOTgwYTNhMjdiZDdlNzBhNSJ9.tx4t3fFG8gRpOhTYfWrDvk2ykeiatC5shGaLCcuqY3Y&download=image.png "")
 
