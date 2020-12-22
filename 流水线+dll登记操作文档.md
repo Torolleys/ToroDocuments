@@ -1,10 +1,10 @@
-#流水线+Dll登记操作文档
+# 流水线+Dll登记操作文档
 
 -----
 
 ### 1. 实现dll登记的目的
 
-    主要原因是代码实行分库管理后，各个业务系统与虚拟子系统之间实现完全解耦，两者之间没人任何关联，所以在下载业务系统的同时也需要下载虚拟子系统，而对于非开发人员（测试/实施）来讲，并不清楚一个业务系统需要使用到哪些虚拟子系统。所以，这里引入dll登记的概念，登记一个业务系统需要使用哪些虚拟子系统，以便测试/实施人员可以拿到业务系统后便可直接运行，不需要考虑我需要从哪里拷贝哪些dll进入程序主目录。  
+主要原因是代码实行分库管理后，各个业务系统与虚拟子系统之间实现完全解耦，两者之间没人任何关联，所以在下载业务系统的同时也需要下载虚拟子系统，而对于非开发人员（测试/实施）来讲，并不清楚一个业务系统需要使用到哪些虚拟子系统。所以，这里引入dll登记的概念，登记一个业务系统需要使用哪些虚拟子系统，以便测试/实施人员可以拿到业务系统后便可直接运行，不需要考虑我需要从哪里拷贝哪些dll进入程序主目录。
 
 可支持以下功能的实现：
 
@@ -18,7 +18,7 @@
 
 ### 2. 实现思路
 
-    虚拟子系统在流水线编译时不再进行压缩包操作，而是把该虚拟子系统的解决方案生成的项目dll根据`Jenkinsfile.json`中配置内容发布到指定的ftp路径`/Halo/${医院名称}/AssemblyServerDll/`或`/Halo/${医院名称}/AssemblyClientDll/` 。相关的业务系统客户端发布至`/Halo/${医院名称}/AssemblyClient/`，服务端发布至`/Halo/${医院名称}/AssemblyServer/`。更改以前的以分支名区分的方式，主要原因就是存在有的医院的部分或全部程序是不存在独立分支(独立基线)的，所以改成按医院名称发布独立的程序。ftp目录结构如下图所示：  
+虚拟子系统在流水线编译时不再进行压缩包操作，而是把该虚拟子系统的解决方案生成的项目dll根据`Jenkinsfile.json`中配置内容发布到指定的ftp路径`/Halo/${医院名称}/AssemblyServerDll/`或`/Halo/${医院名称}/AssemblyClientDll/` 。相关的业务系统客户端发布至`/Halo/${医院名称}/AssemblyClient/`，服务端发布至`/Halo/${医院名称}/AssemblyServer/`。更改以前的以分支名区分的方式，主要原因就是存在有的医院的部分或全部程序是不存在独立分支(独立基线)的，所以改成按医院名称发布独立的程序。ftp目录结构如下图所示：  
 
 ![](https://tcs.teambition.net/storage/3120ec555c2c7d11c6c8205304e26d467060?Signature=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJBcHBJRCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9hcHBJZCI6IjU5Mzc3MGZmODM5NjMyMDAyZTAzNThmMSIsIl9vcmdhbml6YXRpb25JZCI6IiIsImV4cCI6MTYwOTIxMTc1NCwiaWF0IjoxNjA4NjA2OTU0LCJyZXNvdXJjZSI6Ii9zdG9yYWdlLzMxMjBlYzU1NWMyYzdkMTFjNmM4MjA1MzA0ZTI2ZDQ2NzA2MCJ9.9bNoQdGK6GU1NoOSOIJyMiT6H82VvE6yxU3RoLym3xQ&download=image.png "")
 
@@ -64,7 +64,7 @@
 
 > feature进行了简化，减掉了发布的过程，只留下读取配置文件的项目名称并进行编译。
 
-GitLab webhook URL为： `http://jenkins.mediinfo.cn:10081/project/halo-common-feature` 
+GitLab webhook URL为： `http://jenkins.mediinfo.cn:10081/project/halo-common-feature`
 
 Token为： `87c4abef8301b77d92fe2732d4a8313f`
 
@@ -133,4 +133,3 @@ GitLab仓库->设置->(Maintainer权限)集成->填写上面的Hook和Token->勾
 1. 同上
 
 1. 没啥可以做的了，等编译吧
-
